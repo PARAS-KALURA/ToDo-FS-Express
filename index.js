@@ -29,7 +29,7 @@ app.get("/db-test", async (req, res) => {
 
 
 app.get("/", (req, res) => {
-res.send("ToDO API is running");
+res.send("ToDO API is runnnning");
 });
 
 // Add a todo
