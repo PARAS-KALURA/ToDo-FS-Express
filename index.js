@@ -21,7 +21,7 @@ const pool = new Pool({   // “Use that tool to create a real working connectio
 app.use(express.json()); 
 
 
-
+//This route checks if your backend can talk to the database and sends the result to the user.
 app.get("/db-test", async (req, res) => {
   const result = await pool.query("SELECT NOW()");
   res.json(result.rows[0]); // res.jon express is sending data to user from db
@@ -33,3 +33,11 @@ app.get("/", (req, res) => {
   res.send("ToDO is running");
 });
 
+
+// Create Post
+
+
+
+app.listen(PORT, () => {
+  console.log(`Server ${PORT} is running`);
+});
