@@ -16,7 +16,15 @@ const pool = new Pool({   // “Use that tool to create a real working connectio
 })
 
 
-// middleware - If someone sends JSON data to my server, read it and make it usable for me.
+// middleware - If someone sends JSON data to my server, read it and make it usable for me.        
+// Middleware runs on every incoming request and prepares it, like parsing the data, so Express (and your database logic) can understand and use it.
 app.use(express.json()); 
+
+
+
+app.get("/db-test", async (req, res) => {
+  const result = await pool.query("SELECT NOW()");
+  res.json(result.rows[0]);
+} )
 
 
