@@ -24,7 +24,12 @@ app.use(express.json());
 
 app.get("/db-test", async (req, res) => {
   const result = await pool.query("SELECT NOW()");
-  res.json(result.rows[0]);
-} )
+  res.json(result.rows[0]); // res.jon express is sending data to user from db
+});
 
+
+// Home Page
+app.get("/", (req, res) => {
+  res.send("ToDO is running");
+});
 
