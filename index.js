@@ -35,6 +35,18 @@ app.get("/", (req, res) => {
 
 
 // Create Post
+// When a user sends a new todo title,take it, save it in the database, and send the newly created todo back to the user.
+app.post("/todos", async (req, res) => {
+  const {title} = req.body; //  Take title from the data the user sent
+
+  const result = await pool.query(
+    "INSERT INTO todos (title) VALUES ($1) RETURNING *",
+     [title]
+  );
+
+  res.status(201).json(result.rows[0]);
+
+});
 
 
 
