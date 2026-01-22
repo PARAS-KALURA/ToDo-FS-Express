@@ -37,6 +37,8 @@ app.get("/", (req, res) => {
 // Create Post
 // When a user sends a new todo title,take it, save it in the database, and send the newly created todo back to the user.
 app.post("/todos", async (req, res) => {
+
+  try{
   const {title} = req.body; //  Take title from the data the user sent
 
   const result = await pool.query(
@@ -45,10 +47,64 @@ app.post("/todos", async (req, res) => {
   );
 
   res.status(201).json(result.rows[0]);
+  } catch (err) {
+    res.status(500).json({error: err.message});
+  }
 
 });
 
 
+//READ: Get all todos 
+//User asks for todos →
+//Node sends SQL “give me all rows” →
+//PostgreSQL returns them →
+//Express sends array to frontend.
+
+// It is simply showing everything that already exists in the database to the client.
+app.get("/todos", async (req, res) => {
+  try{
+    const result = await pool.query("SELECT * FROM todos ORDER BY id DESC");
+    res.json(result.rows);
+  } catch(err) {
+    res.status(500).json({error: err.message});
+  }
+});
+
+
+
+// Update a todo
+app.put("/todos/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { title, completed } = req.body;
+
+    const result = await pool.query(
+      "UPDATE todos SET title = $1, completed = $2 WHERE id = $3 RETURNING *",
+      [title, completed, id]
+    );
+
+    res.json(result.rows[0]);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+
+//DELETE a todo
+
+app.delete("/todos/:id", async (req, res) => {
+  try{
+    const {id} = req.params;
+   
+    await pool.query("DELETE FROM todos WHERE id = $1", [id]);
+
+    res.json({message: "Todo deleted"});
+
+
+  } catch(err) {
+    res.status(500).json({error: err.message});
+  }
+});
 
 app.listen(PORT, () => {
   console.log(`Server ${PORT} is running`);
