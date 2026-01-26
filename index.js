@@ -1,111 +1,16 @@
-// Import and SetUp
-const express = require("express");
-const {Pool} = require("pg");//  bridge bw node.js and my DB //  Bring me the tool (blueprint) that knows how to talk to PostgreSQL
-
+const express = require('express');
 const app = express();
 const PORT = 3000;
 
+app.get(express.json());
 
-// DB connection - This creates a permanent connection manager.
-const pool = new Pool({   // “Use that tool to create a real working connection to my database.
-  user: "postgres",
-  host: "localhost",
-  database: "todo_app",
-  password: "Paras@2003",
-  port: "5432",
-})
-
-
-// middleware - If someone sends JSON data to my server, read it and make it usable for me.        
-// Middleware runs on every incoming request and prepares it, like parsing the data, so Express (and your database logic) can understand and use it.
-app.use(express.json()); 
-
-
-//This route checks if your backend can talk to the database and sends the result to the user.
-app.get("/db-test", async (req, res) => {
-  const result = await pool.query("SELECT NOW()");
-  res.json(result.rows[0]); // res.jon express is sending data to user from db
-});
-
-
-// Home Page
 app.get("/", (req, res) => {
-  res.send("ToDO is running");
-});
-
-
-// Create Post
-// When a user sends a new todo title,take it, save it in the database, and send the newly created todo back to the user.
-app.post("/todos", async (req, res) => {
-
-  try{
-  const {title} = req.body; //  Take title from the data the user sent
-
-  const result = await pool.query(
-    "INSERT INTO todos (title) VALUES ($1) RETURNING *",
-     [title]
-  );
-
-  res.status(201).json(result.rows[0]);
-  } catch (err) {
-    res.status(500).json({error: err.message});
-  }
-
-});
-
-
-//READ: Get all todos 
-//User asks for todos →
-//Node sends SQL “give me all rows” →
-//PostgreSQL returns them →
-//Express sends array to frontend.
-
-// It is simply showing everything that already exists in the database to the client.
-app.get("/todos", async (req, res) => {
-  try{
-    const result = await pool.query("SELECT * FROM todos ORDER BY id DESC");
-    res.json(result.rows);
-  } catch(err) {
-    res.status(500).json({error: err.message});
-  }
-});
-
-
-
-// Update a todo
-app.put("/todos/:id", async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { title, completed } = req.body;
-
-    const result = await pool.query(
-      "UPDATE todos SET title = $1, completed = $2 WHERE id = $3 RETURNING *",
-      [title, completed, id]
-    );
-
-    res.json(result.rows[0]);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-
-//DELETE a todo
-
-app.delete("/todos/:id", async (req, res) => {
-  try{
-    const {id} = req.params;
-   
-    await pool.query("DELETE FROM todos WHERE id = $1", [id]);
-
-    res.json({message: "Todo deleted"});
-
-
-  } catch(err) {
-    res.status(500).json({error: err.message});
-  }
+  res.json([
+   {id: 1,title: "PDF", completed: "true" },
+   {id: 2, title: "Destructing", completed: "false"}, 
+  ])
 });
 
 app.listen(PORT, () => {
-  console.log(`Server ${PORT} is runnnnning`);
+  console.log(`Server ${PORT} is running`);
 });
