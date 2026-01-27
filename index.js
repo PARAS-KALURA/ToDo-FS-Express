@@ -1,5 +1,5 @@
 const express = require('express');
-const {Pool} = requrire("pg");
+const {Pool} = require("pg");
 
 const app = express();
 const PORT = 3000;
@@ -23,5 +23,5 @@ app.get("/", (req, res) => {
 
 
 app.listen(PORT, () => {
-  console.log(`Server ${PORT} is running`);
+  console.log(`Server ${PORT} is runnnning`);
 });
