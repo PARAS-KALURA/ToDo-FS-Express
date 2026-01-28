@@ -1,10 +1,11 @@
 const express = require('express');
-const {Pool} = require("pg");
+//“From the pg package, take out the tool called Pool that knows how to talk to PostgreSQL.”
+const { Pool } = require("pg");
 
 const app = express();
 const PORT = 3000;
 
-const pool = new Pool ({
+const pool = new Pool({
   user: "postgres",
   host: "localhost",
   database: "todo_app",
@@ -14,12 +15,10 @@ const pool = new Pool ({
 
 app.get(express.json());
 
-app.get("/", (req, res) => {
-  res.json([
-   {id: 1,title: "PDF", completed: "true" },
-   {id: 2, title: "Destructing", completed: "false"}, 
-  ])
-});
+app.get("/db-test", async (req, res) => {
+  const result = await pool.query("SELECT NOW()");
+  res.json(result.rows[0]);
+})
 
 
 app.listen(PORT, () => {
