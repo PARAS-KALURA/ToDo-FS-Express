@@ -18,8 +18,7 @@ app.get(express.json());
 app.get("/db-test", async (req, res) => {
   const result = await pool.query("SELECT NOW()");
   res.json(result.rows[0]);
-})
-
+} )
 
 app.listen(PORT, () => {
   console.log(`Server ${PORT} is runnnnnnnnnnning`);
