@@ -20,6 +20,16 @@ app.get("/db-test", async (req, res) => {
   res.json(result.rows[0]);
 } )
 
+app.post("/todos", async (req, res) => {
+  const {title} = req.body;
+  
+  const result = await pool.query("INSERT INTO todos (title) VALUES ($1) RETURNING *",
+    [title]
+  );
+  
+  res.status(201).json(result.rows[0]);
+})
+
 app.listen(PORT, () => {
   console.log(`Server ${PORT} is runnnnnnnnnnning`);
 });
