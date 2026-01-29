@@ -1,6 +1,7 @@
 const express = require('express');
 //“From the pg package, take out the tool called Pool that knows how to talk to PostgreSQL.”
 const { Pool } = require("pg");
+const cors = require('cors');
 
 const app = express();
 const PORT = 3000;
@@ -14,6 +15,7 @@ const pool = new Pool({
 })
 
 app.use(express.json());
+app.use(cors());
 
 app.get("/db-test", async (req, res) => {
   const result = await pool.query("SELECT NOW()");
@@ -32,15 +34,35 @@ app.post("/todos", async (req, res) => {
 
 app.delete("/todos/:id", async (req, res) => {
   try {
-    const {id} = req.params;
+    const { id } = req.params;
 
     await pool.query("DELETE FROM todos WHERE id = $1", [id]);
     
-    res.json({message: "Todo deleted"});
-  } catch(error) {
-    res.json(500).json({error: error.message});
+    res.json({ message: "Todo deleted" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
-} ) 
+});
+
+
+
+// update
+app.put("/todos/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { completed } = req.body;
+
+    const result = await pool.query(
+      "UPDATE todos SET completed = $1 WHERE id = $2 RETURNING *",
+      [completed, id]
+    );
+
+    res.json(result.rows[0]);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 
 
 app.get("/todos", async (req, res) => {
