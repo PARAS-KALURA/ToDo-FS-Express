@@ -13,7 +13,7 @@ const pool = new Pool({
   port: "5432",
 })
 
-app.get(express.json());
+app.use(express.json());
 
 app.get("/db-test", async (req, res) => {
   const result = await pool.query("SELECT NOW()");
@@ -29,6 +29,19 @@ app.post("/todos", async (req, res) => {
   
   res.status(201).json(result.rows[0]);
 })
+
+app.delete("/todos/:id", async (req, res) => {
+  try {
+    const {id} = req.params;
+
+    await pool.query("DELETE FROM todos WHERE id = $1", [id]);
+    
+    res.json({message: "Todo deleted"});
+  } catch(error) {
+    res.json(500).json({error: error.message});
+  }
+} ) 
+
 
 app.get("/todos", async (req, res) => {
   const result = await pool.query("SELECT * FROM todos ORDER BY id DESC");
