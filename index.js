@@ -14,18 +14,15 @@ const pool = new Pool({
  password: "Paras@2003",
  host: "localhost",
  port: 5432,
- database: "todo_db",
+ database: "todoDB",
 
 })
 
-app.get("/", (req,res) => {
-  res.send("Hey there");
-});
 
 
 // create a new todo
 // This is an Express API route that receives todo data from React, saves it in the database, and sends the saved todo back.
-app.post("/", async (req, res) => {
+app.post("/todos", async (req, res) => {
   try {
     const { description, completed } = req.body;
 
@@ -41,6 +38,54 @@ app.post("/", async (req, res) => {
   }
 });
 
+
+//get all todo
+app.get("/", async (req, res) => {
+  try {
+     const allTodos = await pool.query("SELECT * FROM todo")
+     res.json(allTodos.rows)
+  } catch(error){
+    res.status(500).send("Server Error");
+  }
+} )
+
+//update a todo
+app.put("/todos/:id", async (req, res) => {
+  
+  const {id} = req.params;
+  const {description, completed} = req.body;
+
+  try {
+    
+   const result = await pool.query(
+    "UPDATE todo SET description=$1, completed=$2 WHERE todo_id=$3 RETURNING *",
+    [description, completed, id]
+  );
+
+  res.json(result.rows[0]);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server Error")
+  }
+} )
+
+
+//delete
+app.delete("/todos/:id", async(req,res) => {
+  try {
+    const {id} = req.params;
+    
+    await pool.query("DELETE from todo WHERE todo_id = $1", 
+      [id]);
+    
+
+    res.json({message:"Delted Successfully"})
+
+  } catch(err) {
+    console.error(err.message);
+    res.status(500).send("Server Error");
+  }
+} )
 
 
 app.listen(PORT, () => {
