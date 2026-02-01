@@ -1,9 +1,13 @@
 const express = require("express");
 const {Pool} = require("pg");
+const cors = require("cors");
 
 const PORT = 3000;
 
 const app = express();
+
+app.use(cors()); // allows frontend (React) to talk to backend
+app.use(express.json()); // allows reading req.body
 
 const pool = new Pool({
  user: 'postgres',
@@ -30,10 +34,10 @@ app.post("/", async (req, res) => {
       [description, completed || false]
     );
 
-    res.json(newTodo.rows[0]);
+    res.json(newTodo.rows[0]); // The database gives data to Express, and Express sends it to React as JSON.
   } catch (err) {
     console.error(err.message);
-    res.status(500).send("Server Error");
+    res.status(500).send("Server Error"); 
   }
 });
 
