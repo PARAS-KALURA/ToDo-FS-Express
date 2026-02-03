@@ -1,10 +1,13 @@
+// @ts-ignore
 const express = require("express");
 const {Pool} = require("pg");
 const cors = require("cors");
 
-const PORT = 3000;
+const PORT = 5000;
 
 const app = express();
+
+
 
 app.use(cors()); // allows frontend (React) to talk to backend
 app.use(express.json()); // allows reading req.body
@@ -40,7 +43,7 @@ app.post("/todos", async (req, res) => {
 
 
 //get all todo
-app.get("/", async (req, res) => {
+app.get("/todos", async (req, res) => {
   try {
      const allTodos = await pool.query("SELECT * FROM todo")
      res.json(allTodos.rows)
