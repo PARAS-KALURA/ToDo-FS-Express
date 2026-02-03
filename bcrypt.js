@@ -12,6 +12,6 @@ app.get("/", async (req, res) => {
 
 
 app.listen(PORT, () => {
-    console.log(`${PORT} is running`);
+    console.log(`${PORT} is runnnning`);
 
 })
