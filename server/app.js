@@ -20,6 +20,12 @@ router.post("/signup", async (req, res) => {
         return res.status(400).json("User already exits");
     }
 
+    //hash
+    const saltRounds = 10; //Think of it like locking a door.
+    const hashedPassword = await bcrypt.hash(password, saltRounds); //Take the user's password and convert it into a secure unreadable string.
+    //Salt = random data added before hashing.
+    
+
  } catch(err) {
  res.status(500).json("err.message")
  }
