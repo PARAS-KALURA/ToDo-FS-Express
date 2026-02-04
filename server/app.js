@@ -15,6 +15,7 @@ router.post("/signup", async (req, res) => {
         [email]
     );
 
+    //If we found a user… STOP the signup
     if(user.rows.length > 0) {
         return res.status(400).json("User already exits");
     }
