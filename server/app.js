@@ -24,6 +24,14 @@ router.post("/signup", async (req, res) => {
     const saltRounds = 10; //Think of it like locking a door.
     const hashedPassword = await bcrypt.hash(password, saltRounds); //Take the user's password and convert it into a secure unreadable string.
     //Salt = random data added before hashing.
+
+    //insert
+    await pool.query(
+        'INSERT INTO users (email, password) VALUES ($1, $2)',
+        [email, hashedPassword]
+    );
+
+    res.json("User Registered!");
     
 
  } catch(err) {
