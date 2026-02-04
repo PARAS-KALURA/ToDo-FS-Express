@@ -10,11 +10,14 @@ router.post("/signup", async (req, res) => {
  try {
     
     //check user
-
     const user = await pool.query(
-        "SELECT * FROM users WHERE emial = $1",
+        "SELECT * FROM users WHERE email = $1",
         [email]
-    )
+    );
+
+    if(user.rows.length > 0) {
+        return res.status(400).json("User already exits");
+    }
 
  } catch(err) {
  res.status(500).json("err.message")
