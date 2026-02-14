@@ -37,7 +37,7 @@ app.post("/todos", async (req, res) => {
     res.json(newTodo.rows[0]); // The database gives data to Express, and Express sends it to React as JSON.
   } catch (err) {
     console.error(err.message);
-    res.status(500).send("Server Error"); 
+    res.status(500).send("Server Errrror"); 
   }
 });
 
